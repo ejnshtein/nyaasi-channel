@@ -89,7 +89,7 @@ async function sendMessage (post) {
             url: `${env.MAGNET_REDIRECT_HOST}/${env.MAGNET_REDIRECT_PREFIX}/urn:btih:${post['nyaa:infoHash']}`
           },
           {
-            text: 'Torrent info',
+            text: 'Info',
             url: `https://t.me/${env.BOT_USERNAME}?start=${buffer.encode(`view:${post.id}`)}`
           }
         ]
