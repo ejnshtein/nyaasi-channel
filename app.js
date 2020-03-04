@@ -8,6 +8,7 @@ import RssParser from 'rss-parser'
 import buttons from './lib/buttons.js'
 import buffer from './lib/buffer.js'
 import sleep from './lib/sleep.js'
+import { saveTorrent } from './save-torrent.js'
 
 const { AllHtmlEntities } = HtmlEntities
 const { scheduleJob } = NodeSchedule
@@ -59,8 +60,9 @@ scheduleJob('*/1 * * * *', async () => {
   feed.items = newFeed.items.map(el => el.id)
   if (newPosts.length) {
     for (const post of newPosts) {
-      await sendMessage(post)
       await sleep(1500)
+      await sendMessage(post)
+      saveTorrent(post.id)
     }
   }
 })
