@@ -26,7 +26,7 @@ export async function notifyUsers (torrent, skip = 0) {
 
 async function findValidRegex (subscriptions, torrent) {
   for (const sub of subscriptions) {
-    console.log(sub, torrent.name, torrent.submitter)
+    // console.log(sub, torrent.name, torrent.submitter)
     if (!sub.users || sub.users.length === 0) {
       continue
     }
