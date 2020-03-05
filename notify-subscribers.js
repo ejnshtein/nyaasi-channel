@@ -26,6 +26,7 @@ export async function notifyUsers (torrent, skip = 0) {
 
 async function findValidRegex (subscriptions, torrent) {
   for (const sub of subscriptions) {
+    console.log(sub, torrent.name, torrent.submitter)
     if (!sub.users || sub.users.length === 0) {
       continue
     }
@@ -37,8 +38,8 @@ async function findValidRegex (subscriptions, torrent) {
         }
       }
       if (typeof sub.conditions.submitter === 'string') {
-        if (sub.conditions.submitter !== torrent.conditions ||
-          (!sub.conditions.submitter && torrent.conditions.toLowerCase() !== 'anonymous')
+        if (sub.conditions.submitter !== torrent.submitter ||
+          (!sub.conditions.submitter && torrent.submitter.toLowerCase() !== 'anonymous')
         ) {
           continue
         }
