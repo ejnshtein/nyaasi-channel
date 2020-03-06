@@ -35,7 +35,7 @@ async function findValidRegex (subscriptions, torrent) {
     }
     if (sub.conditions) {
       if (sub.conditions.name) {
-        const test = new RegExp(sub.conditions.name.regex, sub.conditions.name.options)
+        const test = new RegExp(sub.conditions.name.regex, sub.conditions.name.options || 'i')
         if (!test.test(torrent.name)) {
           continue
         }
@@ -115,7 +115,7 @@ async function sendMessages (torrent, chats = [], text) {
           {
             parse_mode: 'HTML',
             reply_markup: {
-              inline_keyboard: keyboard
+              inline_keyboard: [keyboard]
             }
           }
         )
