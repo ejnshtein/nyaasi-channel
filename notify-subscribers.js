@@ -16,12 +16,14 @@ export async function notifyUsers (torrent, skip = 0) {
   const subscriptions = await collection('subscriptions')
     .find({})
     .skip(skip)
-    .limit(20)
+    .limit(50)
 
-  const result = await findValidRegex(subscriptions, torrent)
+  if (subscriptions.length > 0) {
+    const result = await findValidRegex(subscriptions, torrent)
 
-  if (!Array.isArray(result)) {
-    return notifyUsers(torrent, skip + 20)
+    if (!Array.isArray(result)) {
+      return notifyUsers(torrent, skip + 50)
+    }
   }
 }
 
