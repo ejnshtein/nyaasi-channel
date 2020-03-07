@@ -18,58 +18,59 @@ export async function notifyUsers (torrent, skip = 0) {
     .skip(skip)
     .limit(50)
 
-  if (subscriptions.length > 0) {
-    const result = await findValidRegex(subscriptions, torrent)
+  await findValidRegex(subscriptions, torrent)
 
-    if (!Array.isArray(result)) {
-      return notifyUsers(torrent, skip + 50)
-    }
+  if (subscriptions.length === 0) {
+    return notifyUsers(torrent, skip + 50)
   }
 }
 
 async function findValidRegex (subscriptions, torrent) {
-  // console.log(torrent.name, torrent.submitter)
-  for (const sub of subscriptions) {
-    // console.log(sub)
-    if (!sub.chats || sub.chats.length === 0) {
+  // console.log(torrent.submitter, torrent.name)
+  for (const { name, chats, conditions } of subscriptions) {
+    // console.log('try', name)
+    if (!chats || chats.length === 0) {
       continue
     }
-    if (sub.conditions) {
-      if (typeof sub.conditions.name === 'object') {
-        const { options, regex, input } = sub.conditions.name
+    if (conditions) {
+      if (typeof conditions.name === 'object') {
+        const { options, regex, input } = conditions.name
         if (input) {
+          // console.log('name input', input, torrent.name.includes(input))
           if (!torrent.name.includes(input)) {
             continue
           }
         } else if (regex) {
           const test = new RegExp(regex, options || 'i')
+          // console.log('name regex', test, test.test(torrent.name))
           // console.log('name', test, test.test(torrent.name))
           if (!test.test(torrent.name)) {
             continue
           }
         }
       }
-      if (typeof sub.conditions.submitter === 'string') { // use 'any' for anonymous
+      if (typeof conditions.submitter === 'string') { // use 'any' for anonymous
         // console.log('submitter', sub.conditions.submitter)
-        if (sub.conditions.submitter.trim() !== torrent.submitter) {
+        // console.log('submitter', conditions.submitter, torrent.submitter, conditions.submitter.trim() !== torrent.submitter)
+        if (!torrent.submitter || conditions.submitter.trim() !== torrent.submitter) {
           continue
         }
       }
-      if (typeof sub.conditions.trusted === 'boolean') {
-        if (torrent.is_trusted !== sub.conditions.trusted) {
+      if (typeof conditions.trusted === 'boolean') {
+        if (torrent.is_trusted !== conditions.trusted) {
           continue
         }
       }
-      if (typeof sub.conditions.remake === 'boolean') {
-        if (torrent.is_remake !== sub.conditions.remake) {
+      if (typeof conditions.remake === 'boolean') {
+        if (torrent.is_remake !== conditions.remake) {
           continue
         }
       }
     }
     // console.log(sub.chats)
-    return sendMessages(
+    await sendMessages(
       torrent,
-      sub.chats,
+      chats,
       formatMessage(torrent)
     )
   }
