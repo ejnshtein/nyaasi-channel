@@ -33,17 +33,18 @@ async function findValidRegex (subscriptions, torrent) {
     if (!sub.chats || sub.chats.length === 0) {
       continue
     }
-    // console.log(sub.conditions, torrent)
+    console.log(sub.conditions, torrent.name, torrent.submitter)
     if (sub.conditions) {
-      if (sub.conditions.name) {
+      if (typeof sub.conditions.name === 'object') {
         const { options, regex } = sub.conditions.name
         const test = new RegExp(regex, options || 'i')
-        // console.log(test, regex, torrent.name, 'result ', test.test(torrent.name))
+        console.log('name', test, regex, test.test(torrent.name))
         if (!test.test(torrent.name)) {
           continue
         }
       }
       if (typeof sub.conditions.submitter === 'string') { // use 'any' for anonymous
+        console.log('submitter', sub.conditions.submitter, torrent.submitter)
         if (sub.conditions.submitter !== torrent.submitter) {
           continue
         }
