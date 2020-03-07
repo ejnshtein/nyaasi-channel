@@ -50,7 +50,7 @@ async function findValidRegex (subscriptions, torrent) {
         }
       }
       if (typeof sub.conditions.submitter === 'string') { // use 'any' for anonymous
-        console.log('submitter', sub.conditions)
+        console.log('submitter', sub.conditions.submitter)
         if (sub.conditions.submitter !== torrent.submitter) {
           continue
         }
