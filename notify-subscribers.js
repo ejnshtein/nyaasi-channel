@@ -20,7 +20,7 @@ export async function notifyUsers (torrent, skip = 0) {
 
   await findValidRegex(subscriptions, torrent)
 
-  if (subscriptions.length === 0) {
+  if (subscriptions.length === 50) {
     return notifyUsers(torrent, skip + 50)
   }
 }
