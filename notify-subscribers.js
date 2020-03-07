@@ -35,7 +35,9 @@ async function findValidRegex (subscriptions, torrent) {
     }
     if (sub.conditions) {
       if (sub.conditions.name) {
-        const test = new RegExp(sub.conditions.name.regex, sub.conditions.name.options || 'i')
+        const { options, regex } = sub.conditions.name
+        const test = new RegExp(regex, options || 'i')
+        // console.log(test, regex, torrent.name, 'result ', test.test(torrent.name))
         if (!test.test(torrent.name)) {
           continue
         }
@@ -76,7 +78,7 @@ New torrent just arrived!
 .replace(/&/gi, '&amp;')}</a>
 <b>Submitter:</b> ${torrent.submitter !== 'Anonymous' ? `<a href="https://${env.HOST}/user/${torrent.submitter}">${torrent.submitter}</a>` : torrent.submitter}
 <b>Size:</b> ${(torrent.filesize / 1000000000).toFixed(3)} GiB
-<b>Creation Date:</b>: ${templates.date(new Date(torrent.creation_date))}
+<b>Creation Date:</b> ${torrent.creation_date}
 <b>Hash</b>: ${torrent.hash_hex}
 `
 }
