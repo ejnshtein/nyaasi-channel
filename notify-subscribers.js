@@ -28,23 +28,29 @@ export async function notifyUsers (torrent, skip = 0) {
 }
 
 async function findValidRegex (subscriptions, torrent) {
+  console.log(torrent.name, torrent.submitter)
   for (const sub of subscriptions) {
-    // console.log(sub, torrent.name, torrent.submitter)
+    console.log(sub)
     if (!sub.chats || sub.chats.length === 0) {
       continue
     }
-    console.log(sub.conditions, torrent.name, torrent.submitter)
     if (sub.conditions) {
       if (typeof sub.conditions.name === 'object') {
-        const { options, regex } = sub.conditions.name
-        const test = new RegExp(regex, options || 'i')
-        console.log('name', test, torrent.name, test.test(torrent.name))
-        if (!test.test(torrent.name)) {
-          continue
+        const { options, regex, input } = sub.conditions.name
+        if (input) {
+          if (!torrent.name.includes(input)) {
+            continue
+          }
+        } else if (regex) {
+          const test = new RegExp(regex, options || 'i')
+          console.log('name', test, test.test(torrent.name))
+          if (!test.test(torrent.name)) {
+            continue
+          }
         }
       }
       if (typeof sub.conditions.submitter === 'string') { // use 'any' for anonymous
-        console.log('submitter', sub.conditions.submitter, torrent.submitter)
+        console.log('submitter', sub.conditions)
         if (sub.conditions.submitter !== torrent.submitter) {
           continue
         }
@@ -60,6 +66,7 @@ async function findValidRegex (subscriptions, torrent) {
         }
       }
     }
+    console.log(sub.chats)
     return sendMessages(
       torrent,
       sub.chats,
