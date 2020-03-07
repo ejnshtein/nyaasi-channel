@@ -28,7 +28,7 @@ export async function notifyUsers (torrent, skip = 0) {
 }
 
 async function findValidRegex (subscriptions, torrent) {
-  console.log(torrent.name, torrent.submitter)
+  // console.log(torrent.name, torrent.submitter)
   for (const sub of subscriptions) {
     // console.log(sub)
     if (!sub.chats || sub.chats.length === 0) {
@@ -43,14 +43,14 @@ async function findValidRegex (subscriptions, torrent) {
           }
         } else if (regex) {
           const test = new RegExp(regex, options || 'i')
-          console.log('name', test, test.test(torrent.name))
+          // console.log('name', test, test.test(torrent.name))
           if (!test.test(torrent.name)) {
             continue
           }
         }
       }
       if (typeof sub.conditions.submitter === 'string') { // use 'any' for anonymous
-        console.log('submitter', sub.conditions.submitter)
+        // console.log('submitter', sub.conditions.submitter)
         if (sub.conditions.submitter !== torrent.submitter) {
           continue
         }
@@ -66,7 +66,7 @@ async function findValidRegex (subscriptions, torrent) {
         }
       }
     }
-    console.log(sub.chats)
+    // console.log(sub.chats)
     return sendMessages(
       torrent,
       sub.chats,
@@ -84,9 +84,9 @@ New torrent just arrived!
 .replace(/>/gi, '&gt;')
 .replace(/&/gi, '&amp;')}</a>
 <b>Submitter:</b> ${torrent.submitter !== 'Anonymous' ? `<a href="https://${env.HOST}/user/${torrent.submitter}">${torrent.submitter}</a>` : torrent.submitter}
-<b>Size:</b> ${(torrent.filesize / 1000000000).toFixed(3)} GiB
+<b>Size:</b> ${(torrent.filesize / 1000000000).toFixed(2)} GiB
 <b>Creation Date:</b> ${torrent.creation_date}
-<b>Hash</b>: ${torrent.hash_hex}
+<b>Hash</b>: <code>${torrent.hash_hex}</code>
 `
 }
 
