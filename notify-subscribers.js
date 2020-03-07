@@ -38,7 +38,7 @@ async function findValidRegex (subscriptions, torrent) {
       if (typeof sub.conditions.name === 'object') {
         const { options, regex } = sub.conditions.name
         const test = new RegExp(regex, options || 'i')
-        console.log('name', test, regex, test.test(torrent.name))
+        console.log('name', test, torrent.name, test.test(torrent.name))
         if (!test.test(torrent.name)) {
           continue
         }
