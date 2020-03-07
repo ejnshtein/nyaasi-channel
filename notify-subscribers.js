@@ -33,6 +33,7 @@ async function findValidRegex (subscriptions, torrent) {
     if (!sub.chats || sub.chats.length === 0) {
       continue
     }
+    // console.log(sub.conditions, torrent)
     if (sub.conditions) {
       if (sub.conditions.name) {
         const { options, regex } = sub.conditions.name
@@ -42,10 +43,8 @@ async function findValidRegex (subscriptions, torrent) {
           continue
         }
       }
-      if (typeof sub.conditions.submitter === 'string') {
-        if (sub.conditions.submitter !== torrent.submitter ||
-          (!sub.conditions.submitter && torrent.submitter.toLowerCase() !== 'anonymous')
-        ) {
+      if (typeof sub.conditions.submitter === 'string') { // use 'any' for anonymous
+        if (sub.conditions.submitter !== torrent.submitter) {
           continue
         }
       }
