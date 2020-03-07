@@ -30,7 +30,7 @@ export async function notifyUsers (torrent, skip = 0) {
 async function findValidRegex (subscriptions, torrent) {
   console.log(torrent.name, torrent.submitter)
   for (const sub of subscriptions) {
-    console.log(sub)
+    // console.log(sub)
     if (!sub.chats || sub.chats.length === 0) {
       continue
     }
