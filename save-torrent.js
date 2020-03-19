@@ -1,5 +1,4 @@
 import { Nyaa } from '@ejnshtein/nyaasi'
-import collection from './database/index.js'
 import env from './env.js'
 import fs from 'fs'
 import { notifyUsers } from './notify-subscribers.js'

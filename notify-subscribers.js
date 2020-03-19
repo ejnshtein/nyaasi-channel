@@ -70,8 +70,7 @@ async function findValidRegex (subscriptions, torrent) {
     // console.log(sub.chats)
     await sendMessages(
       torrent,
-      chats,
-      formatMessage(torrent)
+      chats
     )
   }
 }
@@ -91,20 +90,39 @@ New torrent just arrived!
 `
 }
 
-async function sendMessages (torrent, chats = [], text) {
+function formatPublicMessage (torrent) {
+  let messageText = `<b>${decode(torrent.name)
+    .replace(/</gi, '&lt;')
+    .replace(/>/gi, '&gt;')
+    .replace(/&/gi, '&amp;')}</b>\n`
+  messageText += `${(torrent.filesize / 1000000000).toFixed(2)} GiB | <a href="https://${env.HOST}/download/${torrent.id}.torrent">Download</a> | <a href="${torrent.url}">View</a>`
+  if (torrent.is_trusted) {
+    messageText += ' | #trusted'
+  }
+  if (torrent.is_remake) {
+    messageText += ' | #remake'
+  }
+  messageText += `\n#c${torrent.main_category_id}_${torrent.sub_category_id} <a href="https://${env.HOST}/?c=${torrent.main_category_id}_${torrent.sub_category_id}">${torrent.main_category}-${torrent.sub_category}</a>`
+
+  return messageText
+}
+
+async function sendMessages (torrent, chats = []) {
   const messages = []
   for (const chatId of chats) {
     const keyboard = [
       {
         text: buttons.torrent.magnet,
         url: `${env.MAGNET_REDIRECT_HOST}/${env.MAGNET_REDIRECT_PREFIX}/${getXtFromMagnet(torrent.magnet)}`
-      },
-      {
-        text: buttons.share,
-        switch_inline_query: `torrent:${torrent.id}`
       }
     ]
     if (chatId > 0) {
+      keyboard.push(
+        {
+          text: buttons.share,
+          switch_inline_query: `torrent:${torrent.id}`
+        }
+      )
       keyboard.unshift(
         {
           text: buttons.torrent.download,
@@ -118,17 +136,26 @@ async function sendMessages (torrent, chats = [], text) {
           url: `https://t.me/${env.BOT_USERNAME}?start=${buffer.encode(`download:${torrent.id}`)}`
         }
       )
+      keyboard.push(
+        {
+          text: 'Info',
+          url: `https://t.me/${env.BOT_USERNAME}?start=${buffer.encode(`view:${torrent.id}`)}`
+        }
+      )
+    }
+    const text = chatId > 0 ? formatMessage(torrent) : formatPublicMessage(torrent)
+    const extra = {
+      parse_mode: 'HTML',
+      reply_markup: {
+        inline_keyboard: [keyboard]
+      }
+    }
+    if (chatId < 0) {
+      extra.disable_web_page_preview = true
     }
     try {
       messages.push(
-        await telegram.sendMessage(chatId, text,
-          {
-            parse_mode: 'HTML',
-            reply_markup: {
-              inline_keyboard: [keyboard]
-            }
-          }
-        )
+        await telegram.sendMessage(chatId, text, extra)
       )
     } catch (e) {
       console.log('error', e)
