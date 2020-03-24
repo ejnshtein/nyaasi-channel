@@ -26,9 +26,7 @@ export async function notifyUsers (torrent, skip = 0) {
 }
 
 async function findValidRegex (subscriptions, torrent) {
-  // console.log(torrent.submitter, torrent.name)
-  for (const { name, chats, conditions } of subscriptions) {
-    // console.log('try', name)
+  for (const { chats, conditions } of subscriptions) {
     if (!chats || chats.length === 0) {
       continue
     }
@@ -36,22 +34,17 @@ async function findValidRegex (subscriptions, torrent) {
       if (typeof conditions.name === 'object') {
         const { options, regex, input } = conditions.name
         if (input) {
-          // console.log('name input', input, torrent.name.includes(input))
           if (!torrent.name.includes(input)) {
             continue
           }
         } else if (regex) {
           const test = new RegExp(regex, options || 'i')
-          // console.log('name regex', test, test.test(torrent.name))
-          // console.log('name', test, test.test(torrent.name))
           if (!test.test(torrent.name)) {
             continue
           }
         }
       }
       if (typeof conditions.submitter === 'string') { // use 'any' for anonymous
-        // console.log('submitter', sub.conditions.submitter)
-        // console.log('submitter', conditions.submitter, torrent.submitter, conditions.submitter.trim() !== torrent.submitter)
         if (!torrent.submitter || conditions.submitter.trim() !== torrent.submitter) {
           continue
         }
@@ -67,7 +60,6 @@ async function findValidRegex (subscriptions, torrent) {
         }
       }
     }
-    // console.log(sub.chats)
     await sendMessages(
       torrent,
       chats
