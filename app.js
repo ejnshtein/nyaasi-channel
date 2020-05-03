@@ -47,7 +47,7 @@ loadFeed()
   })
 
 async function loadFeed () {
-  const data = await parser.parseURL(`https://${env.HOST}/?page=rss`)
+  const data = await parser.parseURL(`${env.REAL_HOST}`)
   data.items.forEach(el => {
     el.id = Number.parseInt(el.guid.split('/').pop())
   })
