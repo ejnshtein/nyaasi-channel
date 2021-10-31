@@ -1,0 +1,10 @@
+{
+  "command": "./node_modules/.bin/nodemon --inspect=0.0.0.0:9222 --nolazy --exitcrash --delay 300ms",
+  "watchDirectory": "dist",
+  "watchIgnore": [
+    "./.tmp",
+    "src",
+    "node_modules"
+  ],
+  "script": "./dist/app.js"
+}

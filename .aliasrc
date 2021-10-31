@@ -1,0 +1,7 @@
+backend=docker-compose -f docker-compose.yml -f docker-compose.core.yml
+dc=docker-compose -f docker-compose.yml
+inapp=backend exec app
+logs=backend logs -f --tail=100
+up=backend up -d
+down=backend down
+restart=down && up

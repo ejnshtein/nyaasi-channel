@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      NODE_ENV: production
+    env_file:
+      - .env
+    networks:
+      - default
+    command: yarn start
+
+networks:
+  default:
+    driver: bridge

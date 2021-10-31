@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+  app:
+    environment:
+      - NODE_ENV=development
+      - NODE_OPTIONS=--enable-source-maps
+    ports:
+      - 9222:9222
+    volumes:
+      - ./dist:/app/dist
+      - ./package.json:/app/package.json
+      - ./forever.json:/app/forever.json
+      - ./tsconfig.json:/app/tsconfig.json
+      - ./yarn.lock:/app/yarn.lock
+    command: yarn watch-js
